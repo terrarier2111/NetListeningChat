@@ -4,7 +4,7 @@ import de.terrarier.netlistening.Client;
 import de.terrarier.netlistening.api.DataContainer;
 import de.terrarier.netlistening.api.event.*;
 
-public class NLChatClient {
+public final class NLChatClient {
 
     public static void main(String[] args) {
         final Client client = new Client.Builder("localhost", 6790)
@@ -41,7 +41,7 @@ public class NLChatClient {
         });
 
         final NLChatClient chatClient = new NLChatClient(client);
-        chatClient.sendMessage("Hello, guys!"); // this gets sent when the connection was established
+        chatClient.sendMessage("Hello world!"); // this gets sent when the connection was established
         // Do other stuff with the client
     }
 

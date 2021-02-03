@@ -4,7 +4,7 @@ import de.terrarier.netlistening.Server;
 import de.terrarier.netlistening.api.DataContainer;
 import de.terrarier.netlistening.api.event.*;
 
-public class NLChatServer {
+public final class NLChatServer {
 
     public static void main(String[] args) {
         final Server server = new Server.Builder(6790)
@@ -61,7 +61,7 @@ public class NLChatServer {
     public void sendMessage(String message, int target) {
         final DataContainer data = new DataContainer();
         data.add(message);
-        server.sendData(data, target);
+        server.getConnection(target).sendData(data);
     }
 
     public void stop() {
