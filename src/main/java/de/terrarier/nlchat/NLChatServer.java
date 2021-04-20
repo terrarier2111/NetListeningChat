@@ -1,17 +1,25 @@
 package de.terrarier.nlchat;
 
 import de.terrarier.netlistening.Server;
-import de.terrarier.netlistening.api.DataContainer;
 import de.terrarier.netlistening.api.event.*;
+
+import java.nio.charset.StandardCharsets;
 
 public final class NLChatServer {
 
     public static void main(String[] args) {
         final Server server = new Server.Builder(6790)
-                .timeout(15000)                                                        // timeout
+                .timeout(15000L)                                                        // timeout
                 .encryption().build()                                                  // encryption
                 .compression().nibbleCompression(true).varIntCompression(true).build() // compression
+                .stringEncoding(StandardCharsets.UTF_16)                               // encoding
                 .build();
+
+        /*
+        final Server minimalServer = new Server.Builder(6790)
+                .timeout(15000L)
+                .build();
+        */
 
         server.registerListener(new DecodeListener() {
             @Override
@@ -25,6 +33,7 @@ public final class NLChatServer {
             @Override
             public void trigger(ConnectionPostInitEvent connectionPostInitEvent) {
                 System.out.println(connectionPostInitEvent.getConnection().getId() + " connected!");
+                connectionPostInitEvent.getConnection().sendData("Hey, i'm the server!");
             }
         });
 
@@ -53,15 +62,11 @@ public final class NLChatServer {
     }
 
     public void sendMessage(String message) {
-        final DataContainer data = new DataContainer();
-        data.add(message);
-        server.sendData(data);
+        server.sendData(message);
     }
 
-    public void sendMessage(String message, int target) {
-        final DataContainer data = new DataContainer();
-        data.add(message);
-        server.getConnection(target).sendData(data);
+    public void sendMessage(String message, int connectionId) {
+        server.getConnection(connectionId).sendData(message);
     }
 
     public void stop() {

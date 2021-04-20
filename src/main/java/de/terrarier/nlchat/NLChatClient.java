@@ -1,14 +1,13 @@
 package de.terrarier.nlchat;
 
 import de.terrarier.netlistening.Client;
-import de.terrarier.netlistening.api.DataContainer;
 import de.terrarier.netlistening.api.event.*;
 
 public final class NLChatClient {
 
     public static void main(String[] args) {
         final Client client = new Client.Builder("localhost", 6790)
-                .timeout(15000)
+                .timeout(15000L)
                 .build();
 
         client.registerListener(new DecodeListener() {
@@ -22,14 +21,14 @@ public final class NLChatClient {
         client.registerListener(new ConnectionPostInitListener() {
             @Override
             public void trigger(ConnectionPostInitEvent connectionPostInitEvent) {
-                System.out.println("The connection connected!");
+                System.out.println("The connection was opened!");
             }
         });
 
         client.registerListener(new ConnectionDisconnectListener() {
             @Override
             public void trigger(ConnectionDisconnectEvent connectionDisconnectEvent) {
-                System.out.println("The connection disconnected!");
+                System.out.println("The connection was closed!");
             }
         });
 
@@ -52,9 +51,7 @@ public final class NLChatClient {
     }
 
     public void sendMessage(String message) {
-        final DataContainer data = new DataContainer();
-        data.add(message);
-        client.sendData(data);
+        client.sendData(message);
     }
 
     public void stop() {
